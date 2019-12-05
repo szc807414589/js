@@ -1,4 +1,4 @@
-#实际开发或者面试中遇到的 js 问题
+#js知识点梳理,实际开发或者面试中遇到的 js 问题,
 ### String
 
 * str.concat()
@@ -126,6 +126,9 @@
 * slice()
         
         切割数组,返回新数组
+* arr.flat(Infinity)
+        
+        多维数组扁平化
 * splice(index,howMany,item1,.....,itemX)
         
         从数组中添加/删除项目，然后返回被删除的项目。
@@ -143,8 +146,32 @@
         	}
         }
         arr.sort(compare)
+
 ### Object
 
+* Object.keys(arr)
+        
+        遍历可枚举的属性，只包含对象本身可枚举属性，不包含原型链可枚举属性
+        let arr = ["a", "b", "c"];
+        let obj = { foo: "bar", baz: 42 };
+        let ArrayLike = { 0 : "a", 1 : "b", 2 : "c"};
+        
+        Object.keys(arr)        // ['0', '1', '2']
+        Object.keys(obj)        // ["foo","baz"]
+        Object.keys(ArrayLike)  // ['0', '1', '2']
+* Object.values(arr)
+        
+        遍历可枚举的属性值，只包含对象本身可枚举属性值，不包含原型链可枚举属性
+        let arr = ["a", "b", "c"];
+        let obj = { foo: "bar", baz: 42 };
+        let ArrayLike = { 0 : "a", 1 : "b", 2 : "c"};
+        
+        Object.values(arr)      // ["a", "b", "c"]
+        Object.values(obj)          // ["bar",42]
+        Object.values(ArrayLike)    // ["a", "b", "c"]
+        
+
+###问题
 * 防抖和节流
         
         防抖:动作绑定事件，动作发生后一定时间后触发事件，
@@ -170,3 +197,98 @@
                 }
             }
         }
+* Promise 构造函数是同步执行还是异步执行，那么 then 方法呢
+
+        const promise = new Promise((resolve, reject) => {
+          console.log(1)
+          resolve()
+          console.log(2)
+        })
+        
+        promise.then(() => {
+          console.log(3)
+        })
+        
+        console.log(4)
+        执行结果是：1243
+        promise构造函数是同步执行的，then方法是异步执行的
+* 如何实现一个 new
+        
+        function _new(fn, ...arg) {
+            const obj = Object.create(fn.prototype);
+            const ret = fn.apply(obj, arg);
+            return ret instanceof Object ? ret : obj;
+        }
+        
+* TCP 三次握手和四次挥手
+
+    ![](./assets/tcp.png)
+    
+        男：我要挂了哦
+        女：等哈，我还要敷面膜
+        女：我敷完了，现在可以挂了
+        男：我舍不得挂，你挂吧
+        女：好吧，我挂了
+        男：等了2MSL听见嘟嘟嘟的声音后挂断
+
+* react中的setState
+    
+        setTimeout/setInterval中 同步更新setState
+        react提供的函数中,setState会合并比如 componentDidMount,onClick
+        
+* npm 模块安装机制：
+
+      发出npm install命令
+      查询node_modules目录之中是否已经存在指定模块
+        若存在，不再重新安装
+        若不存在
+          npm 向 registry 查询模块压缩包的网址
+          下载压缩包，存放在根目录下的.npm目录里
+          解压压缩包到当前项目的node_modules目录
+
+* 观察者模式和订阅-发布模式
+    
+        观察者模式没中间商赚差价     --被动技能
+        发布订阅模式 有中间商赚差价  --主动技能
+
+* cookie 和 token 都存放在 header 中，为什么不会劫持 token
+
+    >cookie：登陆后后端生成一个sessionid放在cookie中返回给客户端，并且服务端一直记录着这个sessionid，客户端以后每次请求都会带上这个sessionid，服务端通过这个sessionid来验证身份之类的操作。所以别人拿到了cookie拿到了sessionid后，就可以完全替代你。
+     
+     >token：登陆后后端不返回一个token给客户端，客户端将这个token存储起来，然后每次客户端请求都需要开发者手动将token放在header中带过去，服务端每次只需要对这个token进行验证就能使用token中的信息来进行下一步操作了。
+     
+    > xss：用户通过各种方式将恶意代码注入到其他用户的页面中。就可以通过脚本获取信息，发起请求，之类的操作。
+     
+    > csrf：跨站请求攻击，简单地说，是攻击者通过一些技术手段欺骗用户的浏览器去访问一个自己曾经认证过的网站并运行一些操作（如发邮件，发消息，甚至财产操作如转账和购买商品）。由于浏览器曾经认证过，所以被访问的网站会认为是真正的用户操作而去运行。这利用了web中用户身份验证的一个漏洞：简单的身份验证只能保证请求发自某个用户的浏览器，却不能保证请求本身是用户自愿发出的。csrf并不能够拿到用户的任何信息，它只是欺骗用户浏览器，让其以用户的名义进行操作。
+     
+    > csrf例子：假如一家银行用以运行转账操作的URL地址如下： http://www.examplebank.com/withdraw?account=AccoutName&amount=1000&for=PayeeName
+     那么，一个恶意攻击者可以在另一个网站上放置如下代码： <img src="<http://www.examplebank.com/withdraw?account=Alice&amount=1000&for=Badman>">
+     如果有账户名为Alice的用户访问了恶意站点，而她之前刚访问过银行不久，登录信息尚未过期，那么她就会损失1000资金。
+
+        上面的两种攻击方式，如果被xss攻击了，不管是token还是cookie，都能被拿到，所以对于xss攻击来说，cookie和token没有什么区别。但是对于csrf来说就有区别了。
+        
+        以上面的csrf攻击为例：
+        
+        cookie：用户点击了链接，cookie未失效，导致发起请求后后端以为是用户正常操作，于是进行扣款操作。
+        token：用户点击链接，由于浏览器不会自动带上token，所以即使发了请求，后端的token验证不会通过，所以不会进行扣款操作。
+
+* 手写一个数据绑定：
+
+        <input id="input" type="text" />
+        <div id="text"></div>
+        
+        let input = document.getElementById("input");
+        let text = document.getElementById("text");
+        let data = { value: "" };
+        Object.defineProperty(data, "value", {
+          set: function(val) {
+            text.innerHTML = val;
+            input.value = val;
+          },
+          get: function() {
+            return input.value;
+          }
+        });
+        input.onkeyup = function(e) {
+          data.value = e.target.value;
+        };
