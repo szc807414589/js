@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>banner</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .container {
+            width: 500px;
+            height: 300px;
+            position: relative;
+            margin: 50px auto;
+            border: 1px solid saddlebrown;
+            overflow: hidden;
+        }
+
+        ul {
+            width: 500000px;
+            height: 300px;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        li {
+            float: left;
+            width: 500px;
+            height: 300px;
+            text-align: center;
+            line-height: 300px;
+            font-size: 40px;
+            color: forestgreen;
+            background-color: sandybrown;
+            border: 1px solid mediumvioletred;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <ul class="ul" id="banner">
+        <li class="list">1</li>
+        <li class="list">2</li>
+        <li class="list">3</li>
+        <li class="list">4</li>
+        <li class="list">5</li>
+    </ul>
+</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js"></script>
+<script>
+    /*
+    *  .container 宽度,相对定位
+    *  ul足够宽,大于 li宽度*li数量 width: 9999em
+    *  li float:left
+    *
+    *
+    * */
+
+	let selectSum = 0
+	function banner(selectSum, time) {
+		$('#banner').animate({
+			'left': -1 * selectSum * 500
+		}, time, () => {
+			selectSum++
+			setTimeout(() => {
+				if (selectSum > 4) {
+					selectSum = 0
+					$('ul li:last').css({
+						position: 'absolute'
+					}, 0)
+					$('ul li:last').animate({
+						left: -500
+					}, 0)
+					$('#banner').animate({
+						'left': 500
+					}, 0)
+				} else if (selectSum < 3) {
+					$('ul li:last').css({
+						position: 'relative',
+						left: 0
+					}, 0)
+				}
+				banner(selectSum, 1000)
+			}, 1000)
+		})
+	}
+
+	banner(selectSum, 1000)
+</script>
+</html>
