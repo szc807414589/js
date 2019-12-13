@@ -82,7 +82,13 @@ console.log(Object.keys(arr))         // ['0', '1', '2']
 console.log(Object.keys(obj))         // ["foo","baz"]
 console.log(Object.keys(ArrayLike))  // ['0', '1', '2']*/
 
-var arr = [[1, 2, 2], [3, 4, 5, 5], [6, 7, 8, 9, [11, 12, [12, 13, [14]]]], 10]
-let as = Array.from(new Set(arr.flat(Infinity)))
-console.log(arr.flat(Infinity))
+// var arr = [[1, 2, 2], [3, 4, 5, 5], [6, 7, 8, 9, [11, 12, [12, 13, [14]]]], 10]
+// let as = Array.from(new Set(arr.flat(Infinity)))
+// console.log(arr.flat(Infinity))
 
+function foo() {
+
+}
+var f = new foo()
+f.name='1'
+console.log(foo.prototype)

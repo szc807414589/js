@@ -294,3 +294,129 @@
         input.onkeyup = function(e) {
           data.value = e.target.value;
         };
+
+* this用法
+
+        1、 由箭头函数调用 ->指向箭头函数外层非箭头函数的this指向 ;
+        2、 由new调用 ->指向新创建的对象 ;
+        3、 由call || apply || bind 调用 -> 指向指定的对象 ;
+        4、 由对象调用 -> 指向这个对象 ;
+        5、 上面几种情况都不是：严格模式下指向undefined，非严格模式下指向全局对象
+        
+* 作用域和作用域链
+
+        作用域就是代码的执行环境,
+        作用域链:内部环境可以通过作用域链访问所有外部环境，但外部环境不能访问内部环境的任何变量和函数。
+
+        变量:声明和赋值
+            var:会变量提升
+            let,const:不会变量提升
+        无论在全局作用域或者函数作用域中，只要通过 var 关键字声明的变量，不论在哪里声明，都会被当成在当前作用域顶部声明的变量
+        其实，变量提升的机制，不太符合我们的编码习惯，我们常常希望代码能够按照顺序执行，这也符合一般人的逻辑习惯。
+        为此 ES6 引入了块级作用域的概念。
+        块级作用域其实就是词法作用域，我们的代码写在哪，就会在哪里执行，这更符合我们的编程习惯。
+        我们常说的块包括函数内部 和 {}之间的部分。
+        为了实现块级作用域，ES6 采用 let 和 const 代替 var 来声明变量。
+        用 let 和 const 声明的变量会把变量的作用域限制在当前的代码块中，
+        并且声明的变量不会被提升。另外，用 let 声明的变量，在同一代码块内，禁止重复声明
+        
+        
+
+* 闭包
+        
+        函数外部不能访问函数内部变量,闭包可以在函数外部访问函数内部的变量
+        function fun(){
+            let n = 999;
+            function show(){
+                return n
+            }
+            return show
+        }
+        let a = fun()
+        console.log(a.show())
+
+
+
+* 构造函数
+        
+        用new来调用的函数,叫做构造函数
+        在使用对象创建多个统一类型的对象时,这些对象会有相似的属性和方法,构造函数可以实现代码复用
+        function Person(name, gender, hobby) {
+          this.name = name;
+          this.gender = gender;
+          this.hobby = hobby;
+          this.age = 6;
+        }
+        
+        var p1 = new Person('zs', '男', 'basketball'); //this指向p1
+        
+        没有手动添加返回值，默认返回 this 。
+        手动添加一个基本数据类型的返回值，最终还是返回 this。
+        手动添加一个复杂数据类型(对象)的返回值，最终返回该对象
+
+* 原型和原型链
+        
+        function Person(name, age) {
+            this.name = name;
+            this.age = age;
+            this.say = function() {
+                console.log('Hello');
+            };
+        }
+        
+        var p1 = new Person('Tom', 18);
+        p1.say();  // 'Hello'
+        var p2 = new Person('Jack', 34);
+        p2.say();  // 'Hello'
+        
+        console.log(p1.say == p2.say); // false
+        每次通过构造函数的形式来调用时,都会开辟一个新的内存空间,所以,p1和p2的内存地址是不一样的.
+        但是,Person中,say方法的功能是同一个.如果要调用多次,就会浪费
+        
+        改进:
+            function Person(name, age) {
+                this.name = name;
+                this.age = age;
+            }
+            Person.prototype.say = function() {
+                 console.log('Hello');
+            };
+            var p1 = new Person('Tom', 18);
+            var p2 = new Person('Jack', 34);
+            console.log(p1.say === p2.say); // true
+            
+            Person.prototype === p1.__proto__;   // true
+            Person.prototype === p2.__proto__;   // true
+            p1.__proto__ === p2.__proto___;      // true
+        
+        *当一个函数 (注意：不仅仅只有构造函数) 创建好之后，都会有一个 prototype 属性，
+        这个属性的值是一个对象，我们把这个对象，称为原型对象。
+        同时，只要在这个原型对象上添加属性和方法，这些属性和方法都可以被该函数的实例所访问。
+        
+        原型对象上，有一个 constructor 属性指向该函数本身；
+        function Person() {
+            // ...
+        }
+        console.log(Person.prototype.constructor === Person); // true
+        
+        当某个函数A当做构造函数来调用时,会产生一个实例对象,这个实例上会有一个__proto__属性,
+        这个属性指向A的原型对象(prototype)
+        
+        如下图,就是原型的理解,其中蓝色的就是原型链
+        
+ ![](./assets/prototype5.png)
+
+
+* bind call apply
+    
+      var obj = {
+        age: 22
+      }
+    
+      function say(name) {
+        console.log('我是：' + name + '|今年：' + this.age);
+      }
+    
+      say.call(obj, 'jack'); // 我是：jack|今年：22
+      say.apply(obj, ['mike']); // 我是：mike|今年：22
+    
