@@ -427,8 +427,96 @@
 * 继承
         
         继承的根本思想就是原型链
-        es5继承:
-            组合继承,将原型链和构造函数组合到一起来实现继承,思路就是
-            通过原型链来对 属性和方法的继承,
-            通过构造函数来实现对实例属性的继承.
+###es5继承:
+####组合继承,将原型链和构造函数组合到一起来实现继承,思路就是
+        通过原型链来对    属性和方法的继承,
+        通过构造函数对    实例属性的继承.
+        
+        function Father(name) {
+        	this.name = name;
+        	this.colors = ['red', 'blue', 'green'];
+        }
+        
+        Father.prototype.sayName = function () {
+        	console.log(this.name);
+        };
+        
+        function Son(name, age) {
+        	Father.call(this, name);//继承实例属性，第一次调用Father()
+        	this.age = age;
+        }
+        
+        Son.prototype = new Father();//继承父类方法,第二次调用Father()
+        Son.prototype.sayAge = function () {
+        	console.log(this.age);
+        };
+        let instance1 = new Son('louis', 5);
+        instance1.colors.push('black');
+        console.log(instance1.colors);//"red,blue,green,black"
+        instance1.sayName();//louis
+        instance1.sayAge();//5
+        let instance2 = new Son('zhai', 10);
+        console.log(instance2.colors);//"red,blue,green"
+        instance2.sayName();//zhai
+        instance2.sayAge();//10
             
+####寄生组合继承
+        // 组合继承最大的问题就是无论什么情况下,都会调用两次父类构造函数:
+        // 一次是在创建子类型原型的时候, 另一次是在子类型构造函数内部.
+        // 寄生组合式继承就是为了降低调用父类构造函数的开销而出现的 .
+        //其背后的基本思路是: 不必为了指定子类型的原型而调用超类型的构造函数
+        function inherit(son, father) {
+        	//Object.create() 接收两个参数:
+        		// 1 一个用作新对象原型的对象
+        		// 2 (可选的)一个为新对象定义额外属性的对象
+        	let prototypeObj = Object.create(father.prototype);//创建对象
+        	prototypeObj.constructor = son;//增强对象
+        	son.prototype = prototypeObj;//指定对象
+        }
+
+        function Father(name) {
+            this.name = name;
+            this.colors = ['red', 'blue', 'green'];
+        }
+        
+        Father.prototype.sayName = function () {
+            console.log(this.name);
+        };
+        
+        function Son(name, age) {
+            Father.call(this, name);//继承实例属性，第一次调用Father()
+            this.age = age;
+        }
+        
+        //Son.prototype = new Father();//继承父类方法,第二次调用Father()
+        inherit(Son, Father);
+        Son.prototype.sayAge = function () {
+            console.log(this.age);
+        };
+        let instance1 = new Son('louis', 5);
+        instance1.colors.push('black');
+        console.log(instance1.colors);//"red,blue,green,black"
+        instance1.sayName();//louis
+        instance1.sayAge();//5
+        let instance2 = new Son('zhai', 10);
+        console.log(instance2.colors);//"red,blue,green"
+        instance2.sayName();//zhai
+        instance2.sayAge();//10
+
+###es6继承
+        
+        extends 
+        因为子类自己的this对象，必须先通过父类的构造函数完成塑造，
+        得到与父类同样的实例属性和方法，然后再对其进行加工，
+        加上子类自己的实例属性和方法。如果不调用super方法，子类就得不到this对象。
+        
+        class A {
+          static hello() {
+            console.log('hello world');
+          }
+        }
+        
+        class B extends A {
+        }
+        
+        B.hello()  // hello world
