@@ -169,7 +169,30 @@
         Object.values(arr)      // ["a", "b", "c"]
         Object.values(obj)          // ["bar",42]
         Object.values(ArrayLike)    // ["a", "b", "c"]
+* Object.is(a,b)
+
+        两个值都是 undefined
+        两个值都是 null
+        两个值都是 true 或者都是 false
+        两个值是由相同个数的字符按照相同的顺序组成的字符串
+        两个值指向同一个对象
+        两个值都是数字并且
+        都是正零 +0
+        都是负零 -0
+        都是 NaN
+        都是除零和 NaN 外的其它同一个数字
         
+        if (!Object.is) {
+          Object.is = function(x, y) {
+            if (x === y) { // Steps 1-5, 7-10
+              // 针对 +0不等于-0
+              return x !== 0 || 1 / x === 1 / y;
+            } else {
+              // 针对 NaN等于NaN
+              return x !== x && y !== y;
+            }
+          };
+        }
 
 ### 问题
 
