@@ -3,6 +3,7 @@ const mapTag = '[object Map]';
 const setTag = '[object Set]';
 const arrayTag = '[object Array]';
 const objectTag = '[object Object]';
+
 const nullTag = '[object Null]';
 const undefinedTag = '[object Undefined]';
 const functionTag = '[object Function]';
