@@ -547,3 +547,7 @@
         }
         
         B.hello()  // hello world
+
+* 深拷贝
+
+        js深拷贝 ==> ./src/deepClone.js
