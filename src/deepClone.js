@@ -2,12 +2,12 @@
 * 分为可继续遍历的数据和不可继续遍历的数据
 *
 * */
-import * as Type from '../checkType';
+import * as Type from './checkType';
 
 const ArrayClone = arg => {
 	const clone_arr = [];
 	const result = arg.map(v => DeepClone(v));
-	clone_arr.push(result);
+	clone_arr.push(...result);
 	return clone_arr;
 };
 const ObjectClone = (arg) => {
@@ -23,9 +23,15 @@ const isSimpleData = arg => (
 	Type.isBool(arg) ||
 	Type.isNil(arg) ||
 	Type.isString(arg) ||
+	Type.isNumber(arg) ||
+	Type.isRegexp(arg) ||
+	Type.isDate(arg) ||
+	Type.isError(arg) ||
 	Type.isSymbol(arg)
 );
-const SimpleClone = arg => arg;
+const SimpleClone = arg => {
+	return arg;
+};
 const DeepClone = arg => {
 	/**/
 	if (isSimpleData(arg)) {
@@ -50,11 +56,11 @@ const target = {
 	// map,
 	// set,
 	bool: true,
-	// num: new Number(2),
-	// str: new String(2),
-	symbol: Object(Symbol(1)),
+	num: new Number(2),
+	str: new String(2),
+	symbol: Object(Symbol('2')),
 	date: new Date(),
-	reg: /\d+/,
+	reg: /\d+/
 	// error: new Error(),
 	// func1: () => {
 	// 	console.log('code秘密花园');
