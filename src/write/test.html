@@ -2,9 +2,45 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>$Title$</title>
+    <title>test</title>
 </head>
 <body>
-$END$
+<button id="test">测试防抖</button>
+<button id="Throtte">测试节流</button>
 </body>
+<script>
+	const Btn = document.getElementById('test');
+	const ThrotteBtn = document.getElementById('Throtte');
+	const click = function () {
+		console.log('click');
+	};
+
+	//防抖
+	const Debounce = function (fn, time) {
+		console.log(1);
+		let Timer = null;
+		return () => {
+			clearTimeout(Timer);
+			Timer = setTimeout(() => {
+				fn.apply(this, arguments);
+			}, time);
+		};
+	};
+	//节流
+	const Throtte = function(fn, time) {
+		let start = 0;
+		return () => {
+			let cur = Date.now();
+			if (cur - start > time) {
+				fn.apply(this, arguments);
+				start = Date.now();
+			}
+		};
+	};
+
+	const bindClick = Debounce(click, 2000);
+	const bindThrotteClick = Throtte(click, 1000);
+	Btn.addEventListener('click', bindClick);
+	ThrotteBtn.addEventListener('click', bindThrotteClick);
+</script>
 </html>
