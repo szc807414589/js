@@ -5,6 +5,7 @@
 *       特点:指定this,返回一个函数,传递参数并且柯理化
 * */
 Function.prototype.myBind = function (ctx) {
+	//this指向调用myBind的内容
 	if (typeof this !== 'function') {
 		throw new Error('不是function不能用bind');
 	}
@@ -25,34 +26,13 @@ Function.prototype.myBind = function (ctx) {
 
 	function Temp() {
 	}//需要声明一个空函数,用来继承原型
-	Temp.prototype = this.prototype;
+	// 箭头函数没有 prototype，箭头函数this永远指向它所在的作用域
+	if (this.prototype) {
+		Temp.prototype = this.prototype;
+	}
 	result.prototype = new Temp();
 
 	return result;
-};
-
-Function.prototype.bind2 = function (content) {
-	if (typeof this != 'function') {
-		throw Error('not a function');
-	}
-	// 若没问参数类型则从这开始写
-	let fn = this;
-	let args = [...arguments].slice(1);
-
-	let resFn = function () {
-		return fn.apply(
-			this instanceof resFn ? this : content,
-			args.concat(...arguments)
-		);
-	};
-
-	function tmp() {
-	}
-
-	tmp.prototype = this.prototype;
-	resFn.prototype = new tmp();
-
-	return resFn;
 };
 
 
@@ -72,7 +52,6 @@ Fn.prototype.pro = '原型数据';
 
 // const bindFn = Fn.bind(obj, 'LJ', 25);
 const bindFn = Fn.myBind(obj, 'LJ', 25);
-// const bindFn = Fn.bind2(obj, 'LJ', 25);
 
 const newBind = new bindFn();
 
