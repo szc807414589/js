@@ -245,6 +245,14 @@
             return ret instanceof Object ? ret : obj;
         }
         
+* 如何实现一个 Object.create()
+        
+        _create = function (o) {
+            let F = function () {}
+            F.prototype = o
+            return new F()
+        }
+        
 * TCP 三次握手和四次挥手
 
     ![](./assets/tcp.png)
